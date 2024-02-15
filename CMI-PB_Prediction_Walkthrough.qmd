@@ -2,7 +2,7 @@
 title: "Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning"
 author: "Jason Hsiao"
 date: "2024-02-13"
-format: pdf
+format: html
 ---
 
 ***RECOMMENDED***: Going through the walkthrough by viewing the online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough. Please also download the Quarto file from the following repository to modify and run the code locally: https://github.com/jhsiao12/CMI-PB_Walkthrough/.
@@ -261,7 +261,8 @@ ab_validation <- validation_df %>%
 #     fit(MFI_normalised ~ actual_day_relative_to_boost + MFI_normalised_baseline +                  infancy_vac, data = training_df)
 
 # Apply lm_train to the validation data and score for accuracy
-#   predicted_val <- predict(lm_train, validation_df)
+#   ab_validation <- validation_df %>%
+#     mutate(predict(lm_train, validation_df))
 
 ```
 

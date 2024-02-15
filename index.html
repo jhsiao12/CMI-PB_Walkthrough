@@ -392,7 +392,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     fit(MFI_normalised ~ actual_day_relative_to_boost + MFI_normalised_baseline +                  infancy_vac, data = training_df)</span></span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply lm_train to the validation data and score for accuracy</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   predicted_val &lt;- predict(lm_train, validation_df)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   ab_validation &lt;- validation_df %&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(predict(lm_train, validation_df))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Feel free to play around with different models and see how they perform. You may consult the <a href="https://parsnip.tidymodels.org/articles/Examples.html#linear_reg-models">documentation</a> for the <code>tidymodels</code> framework for more information on different models and how to specify them.</p>
 <p>Ultimately, using tidymodels allows us to easily switch between different models, which would otherwise be more cumbersome to do using the base R functions.</p>
