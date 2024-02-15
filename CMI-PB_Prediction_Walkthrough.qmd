@@ -2,7 +2,7 @@
 title: "Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning"
 author: "Jason Hsiao"
 date: "2024-02-13"
-format: pdf
+format: html
 ---
 
 ***RECOMMENDED***: The online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough.
