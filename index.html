@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>A website version of this document can be found on <a href="">GitHub pages</a></p>
+<p><strong><em>RECOMMENDED</em></strong>: The online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough.</p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>This document is a step-by-step walkthrough that demonstrates how to build a prediction model using data from Computational Models of Immunity - Pertussis Boost <a href="https://www.cmi-pb.org/">(CMI-PB) database</a>. For this walkthrough, we will use raw data from the CMI-PB predictional challenge database to predict IgG titers at day 14 post-vaccination. More information about the data can be found on the CMI-PB website.</p>
@@ -161,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>prediction_specimen_file <span class="ot">&lt;-</span> <span class="fu">paste0</span>(prediction_url_path, <span class="st">"2022BD_specimen.tsv"</span>)</span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>prediction_specimen <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(prediction_specimen_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong><em>Note</em></strong>: Since CMI-PB releases new data every year, the link used below may not be current. If this occurs, You will have to download the raw datasets from the CMI-PB website, under <a href="https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources">Data and Resources tab</a>.</p>
+<p><strong><em>Note</em></strong>: Since CMI-PB releases new data every year, the link used below may not be current. If this occurs, you will have to download the raw datasets from either the following <a href="https://github.com/jhsiao12/CMI-PB_Walkthrough/">repository</a> or the CMI-PB website, under <a href="https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources">Data and Resources tab</a>.</p>
 <p>If you still have trouble locating the files, there is a helpful <a href="https://discuss.cmi-pb.org/">Solutions Center</a> where you may post questions and get help from the CMI-PB community.</p>
 </section>
 <section id="data-pre-processing" class="level2">
@@ -487,6 +487,9 @@ corrupt data frame: columns will be truncated or padded with NAs</code></pre>
 <section id="importing-actual-d14-antibody-titers-to-compare" class="level2">
 <h2 class="anchored" data-anchor-id="importing-actual-d14-antibody-titers-to-compare">Importing Actual d14 Antibody Titers to Compare</h2>
 <p>While we have been working with a 2022 dataset (prediction dataset) that only has d0 baseline values, we have access to the actual d14 antibody titers from the 2022 dataset. We can use these to compare our predicted values to the actual values. Let’s get this from the CMI-PB website (2nd challenge results).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TO BE COMPLETED AFTER CMI-PB PUBLISHES 2022 RESULTS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
