@@ -1,6 +1,5 @@
 ## Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning
 
----
 
 ### Introduction
 
