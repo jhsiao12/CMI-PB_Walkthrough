@@ -2,10 +2,10 @@
 title: "Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning"
 author: "Jason Hsiao"
 date: "2024-02-13"
-format: html
+format: pdf
 ---
 
-A website version of this document can be found on [GitHub pages]()
+***RECOMMENDED***: The online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough.
 
 ## Introduction
 This document is a step-by-step walkthrough that demonstrates how to build a prediction model using data from Computational Models of Immunity - Pertussis Boost [(CMI-PB) database](https://www.cmi-pb.org/). For this walkthrough, we will use raw data from the CMI-PB predictional challenge database to predict IgG titers at day 14 post-vaccination. More information about the data can be found on the CMI-PB website. 
@@ -65,7 +65,7 @@ prediction_specimen <- read_tsv(prediction_specimen_file)
 
 ```
 
-***Note***: Since CMI-PB releases new data every year, the link used below may not be current. If this occurs, You will have to download the raw datasets from the CMI-PB website, under [Data and Resources tab](https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources).
+***Note***: Since CMI-PB releases new data every year, the link used below may not be current. If this occurs, you will have to download the raw datasets from either the following [repository](https://github.com/jhsiao12/CMI-PB_Walkthrough/) or the CMI-PB website, under [Data and Resources tab](https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources).
 
 If you still have trouble locating the files, there is a helpful [Solutions Center](https://discuss.cmi-pb.org/) where you may post questions and get help from the CMI-PB community.
 
@@ -340,7 +340,10 @@ head(ab_prediction)
 
 While we have been working with a 2022 dataset (prediction dataset) that only has d0 baseline values, we have access to the actual d14 antibody titers from the 2022 dataset. We can use these to compare our predicted values to the actual values. Let's get this from the CMI-PB website (2nd challenge results).
 
+```{r}
+# TO BE COMPLETED AFTER CMI-PB PUBLISHES 2022 RESULTS
 
+```
 
 
 ## Discussion
