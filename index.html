@@ -380,7 +380,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>ab_validation <span class="ot">&lt;-</span> validation_df <span class="sc">%&gt;%</span></span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">predict</span>(lm_train, validation_df)) <span class="co"># adding a new column to the validation dataframe that contains the predicted antibody titers</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong><em>IMPORTANT!</em></strong>: The advantage of this using tidymodels is that if we wanted to change the model to a different type of model, we can simply change the <code>linear_reg()</code> function to another function, such as Lasso regression, by changing the arguments and engine as follows:</p>
+<p><strong><em>IMPORTANT!</em></strong>: The advantage of using the tidymodels framework is that if we wanted to change the model to a different type of model, all we need to do is change the <code>linear_reg()</code> function to another function, such as Lasso regression, by changing only the arguments and <code>set_engine()</code> function as follows:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specifying the model using the tidymodels framework</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   lm_spec &lt;- </span></span>

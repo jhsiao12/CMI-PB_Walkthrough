@@ -248,7 +248,7 @@ ab_validation <- validation_df %>%
 
 ```
 
-***IMPORTANT!***: The advantage of this using tidymodels is that if we wanted to change the model to a different type of model, we can simply change the `linear_reg()` function to another function, such as Lasso regression, by changing the arguments and engine as follows:
+***IMPORTANT!***: The advantage of using the tidymodels framework is that if we wanted to change the model to a different type of model, all we need to do is change the `linear_reg()` function to another function, such as Lasso regression, by changing only the arguments and `set_engine()` function as follows:
 
 ```{r}
 # Specifying the model using the tidymodels framework
