@@ -11,4 +11,5 @@ The datasets required for the walkthrough should be automatically downloaded usi
 ---
 
 ![](CMIPB.jpg)
+
 This walkthrough was adapted from a modeling attempt at task 1.1 of the 2022 CMI-PB Prediction Challenge on the CMI-PB website (https://www.cmi-pb.org/). This challenge provides data from individuals who have received a Pertussis booster as a proxy for Pertussis infection. By providing this data, the project aims to facilitate interdisciplinary collaboration for predictive modeling of immune responses following Pertussis boost to better characterize the associated immune response to Pertussis vaccinations. 
