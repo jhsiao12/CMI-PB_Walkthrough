@@ -1,8 +1,6 @@
 ## Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning
 
-This repository provides resources for interested students to further learn systems vaccinology and predict patient responses to Pertussis vaccination using basic machine learning. Specifically, the following [walkthrough](https://jhsiao12.github.io/CMI-PB_Walkthrough/) provides a tidymodels framework for machine learning prediction of IgG antibody titers against Pertussis toxin (PT) 7 days post-vaccination.
-
-The walkthrough provides guidance and resources to understand basic machine learning using the tidymodels framework.
+This repository provides resources for students interested in further exploring systems vaccinology and predicting patient responses to Pertussis vaccination using basic machine learning. Specifically, the following [walkthrough](https://jhsiao12.github.io/CMI-PB_Walkthrough/) builds a customizable tidymodels machine learning prediction of IgG antibody titers against Pertussis toxin (PT) 7 days post-vaccination.
 
 **Get started**: directly download the Quarto Document `CMI-PB_Prediction_Walkthrough.qmd` of the step-by-step walkthrough to start modifying and experimenting in Rstudio. The rendered HTML version of this Quarto Document, linked above, provides the walkthrough in a more reader-friendly format.
 
