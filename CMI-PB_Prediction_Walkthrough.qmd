@@ -2,10 +2,10 @@
 title: "Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning"
 author: "Jason Hsiao"
 date: "2024-02-13"
-format: html
+format: pdf
 ---
 
-***RECOMMENDED***: The online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough.
+***RECOMMENDED***: Going through the walkthrough by viewing the online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough. Please also download the Quarto file from the following repository to modify and run the code locally: https://github.com/jhsiao12/CMI-PB_Walkthrough/.
 
 ## Introduction
 This document is a step-by-step walkthrough that demonstrates how to build a prediction model using data from Computational Models of Immunity - Pertussis Boost [(CMI-PB) database](https://www.cmi-pb.org/). For this walkthrough, we will use raw data from the CMI-PB predictional challenge database to predict IgG titers at day 14 post-vaccination. More information about the data can be found on the CMI-PB website. 
