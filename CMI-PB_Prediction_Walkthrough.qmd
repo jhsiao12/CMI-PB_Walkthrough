@@ -253,8 +253,8 @@ ab_validation <- validation_df %>%
 ```{r}
 # Specifying the model using the tidymodels framework
 #   lm_spec <- 
-#     linear_reg(penalty = 0, mixture = 1) %>%
-#     set_engine("glmnet")
+#     linear_reg(penalty = 0, mixture = 1) %>% # specifies the penalty and mixture for lasso regression
+#     set_engine("glmnet") # specifies the engine used for lasso
 
 # Fitting the model to the training data
 #   lm_train <- lm_spec %>% 
