@@ -2,7 +2,7 @@
 title: "Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning"
 author: "Jason Hsiao"
 date: "2024-02-13"
-format: html
+format: pdf
 ---
 
 ***RECOMMENDED***: Going through the walkthrough by viewing the online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough. Please also download the Quarto file from the following repository to modify and run the code locally: https://github.com/jhsiao12/CMI-PB_Walkthrough/.
@@ -192,7 +192,7 @@ Our ultimate goal is to have a model that predicts antibody titer as a function 
 
 `subject_id` is therefore not a predictor in the model, but rather a grouping variable. 
 
-To get MFI_normalised_baseline, we need to add a new column (variable) to our training and validation datasets that contains the baseline antibody titer value for each subject. We can then use this new column as a predictor in our model. 
+To get `MFI_normalised_baseline`, we need to add a new column (variable) to our training and validation datasets that contains the baseline antibody titer value for each subject. We can then use this new column as a predictor in our model. 
 
 ```{r}
 # Create a dataframe by filtering the baseline MFI_normalised values for each subject
@@ -221,7 +221,7 @@ validation_df <- non_baseline_values %>%
 # Let's also make infancy_vac column as factors, since we will be using them as factors in the model
 training_validation$infancy_vac <- as.factor(training_validation$infancy_vac)
 
-# Since our end goal is to predict day 14 antibody titers, let's also remove any data in our training and validation sets where actual_daY_relative_to_boost is greater than 14
+# Since our end goal is to predict day 14 antibody titers, let's also remove any data in our training and validation sets where actual_day_relative_to_boost is greater than 14
 training_df <- training_df %>% filter(actual_day_relative_to_boost <= 14)
 validation_df <- validation_df %>% filter(actual_day_relative_to_boost <= 14)
 
@@ -329,7 +329,8 @@ new_points <- new_points %>%
 # We now have a dataframe that contains all the information needed for the model to predict the antibody titers at d14 for each subject in the prediction dataset.
 # Apply the model to the prediction dataset
 ab_prediction <- new_points %>%
-  mutate(predicted = predict(lm_train, new_data = new_points)) 
+  mutate(predicted = predict(lm_train, new_data = new_points)) %>%
+  unnest(predicted)
 
 # Let's inspect ab_prediction to see the predicted antibody titers at d14 for each subject_id
 head(ab_prediction)
@@ -339,20 +340,74 @@ head(ab_prediction)
 
 ## Importing Actual d14 Antibody Titers to Compare
 
-While we have been working with a 2022 dataset (prediction dataset) that only has d0 baseline values, we have access to the actual d14 antibody titers from the 2022 dataset. We can use these to compare our predicted values to the actual values. Let's get this from the CMI-PB website (2nd challenge results).
+While we have been working with a 2022 dataset (prediction dataset) that only has d0 baseline values, we have access to the actual d14 antibody titers from the 2022 dataset. We can use these to compare our predicted values to the actual values. 
+
+The entire 2020, 2021, 2022 antibody titer combined dataset is available from the CMI-PB application programming interface (API). We can use the `jsonlite` package to import the data, which is in JSON format. 
+
+API is an interface that essentially has a set of functions and procedures that allow programs to access data and features from another application. In this case, this would be our computer to CMI-PB data. The API outlines available options (different types of datasets). As a developer, you can make requests to these API endpoints to use them in your own application.
+
+We essentially want to repeat all of the above steps for this new data (except training split). This will allow us to ultimately visualize the predicted vs. actual d0 - d14 antibody titers for each subject in the 2022 dataset.
 
 ```{r}
-# TO BE COMPLETED AFTER CMI-PB PUBLISHES 2022 RESULTS
+# Import the data
+library(jsonlite)
+
+actual_data <- fromJSON("https://www.cmi-pb.org/api/v4_1/plasma_ab_titer")
+
+
+# Data Pre-Processing
+## Sort the data for 2022 specimens using prediction_specimen metadata
+actual_data_2022 <- inner_join(actual_data, prediction_meta, by = "specimen_id")
+
+## Filter for d0 to d14 values for IgG against PT only
+actual_data_2022 <- actual_data_2022 %>% 
+  filter(planned_day_relative_to_boost %in% c(0 : 14), antigen == "PT", isotype == "IgG")
+
+
+# Preparing Baseline Value Dataframes
+## Create a dataframe by filtering the baseline MFI_normalised values for each subject
+baseline_2022 <- actual_data_2022 %>% 
+  filter(planned_day_relative_to_boost == 0)
+
+## Create a dataframe that only has baseline values excluded for each subject
+non_baseline_2022 <- actual_data_2022 %>% 
+  filter(planned_day_relative_to_boost != 0)
+
+## Append baseline values to non-baseline values as a separate column and call it MFI_normalised_baseline. 
+df_2022 <- non_baseline_2022 %>% 
+  left_join(baseline_2022[,c('subject_id', 'MFI_normalised')], by = "subject_id", suffix = c("", "_baseline"))
+
+
+# Applying the Model to the 2022 Dataset
+ab_2022 <- df_2022 %>%
+  mutate(predict(lm_train, df_2022)) 
+
+## Plotting the Predicted and Actual 2022 Data
+ggplot(ab_2022, 
+  aes(x = actual_day_relative_to_boost, y = MFI_normalised,
+      col = infancy_vac)) +
+  geom_point() +
+  geom_line(aes(y = .pred), color = "black") + 
+  facet_wrap(~subject_id) +
+  theme_bw()
+
+## Calculate the Spearman correlation
+cor.test(ab_2022$MFI_normalised, ab_2022$.pred, method = "spearman")
 
 ```
 
 
 ## Discussion
 
+As you can see with our plotted predicted vs. actual 2022 data, and the Spearman Correlation, the model that was trained on 2021 data does very poorly on the 2022 data. This represents the goal of systems vaccinology - to understand how to better predict the immune response to a vaccine in a new population. The very basic model we used in this tutorial is not sufficient to predict the immune response to the vaccine, and highlights how there is much to learn about how to predict the immune response to vaccines in different populations. Understanding this will ultimately allow better vaccine design, and therefore more robust individual and population immunity against preventable diseases.
+
+
+### Possible Extensions
+
 As mentioned previously, the tidymodels framework allows you to change the model type easily. This is useful if you want to compare different models to see which one performs best. Feel free to try different models and compare their performance qualitatively by plotting the predicted values against the actual values for each subject in the validation dataset, and quantitatively using Spearman correlation. You may also try other methods of evaluating the model, such as mean squared error or root mean squared error. 
 
 You may also choose to change the predictor variables in the model to see if you can improve the model's performance. For example, you may want to include other variables such as age, sex, race, etc. to see if they improve the model's performance. 
 
-Finally, you may choose to look at other datasets in the CMI-PB challenge to see if you can model other types of data, such as PBMC cell frequency. These other datasets may be found [here](https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources).
+To extend your learning, you may choose to look at other datasets in the CMI-PB challenge to see if you can model other types of data, such as PBMC cell frequency. These other datasets may be found [here](https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources).
 
 We hope that this tutorial has given you a good introduction to the tidymodels framework and how to use it to fit a basic machine learning model to predict antibody titers. For additional information/resources, please refer to the [tidymodels website](https://www.tidymodels.org/). Some other useful things to learn to deepen you knowledge include: Lasso regression, Ridge regression, Elastic net regression, and any other type of modeling method you are interested in.

@@ -330,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="preparing-baseline-value-dataframes">Preparing Baseline Value Dataframes</h2>
 <p>Our ultimate goal is to have a model that predicts antibody titer as a function of <code>actual_day_relative_to_boost</code>, <code>infancy_vac</code>, and <code>MFI_normalised_baseline</code>. The reason why we want <code>MFI_normalised_baseline</code> is because we want to account for the baseline antibody titer values for each subject. In other words, any given <code>subject_id</code> will have a different baseline antibody titer value, and if we also know their <code>infancy_vac</code> status, we can use this information to predict their antibody titer at day 14.</p>
 <p><code>subject_id</code> is therefore not a predictor in the model, but rather a grouping variable.</p>
-<p>To get MFI_normalised_baseline, we need to add a new column (variable) to our training and validation datasets that contains the baseline antibody titer value for each subject. We can then use this new column as a predictor in our model.</p>
+<p>To get <code>MFI_normalised_baseline</code>, we need to add a new column (variable) to our training and validation datasets that contains the baseline antibody titer value for each subject. We can then use this new column as a predictor in our model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a dataframe by filtering the baseline MFI_normalised values for each subject</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>baseline_values <span class="ot">&lt;-</span> training_train <span class="sc">%&gt;%</span> </span>
@@ -358,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's also make infancy_vac column as factors, since we will be using them as factors in the model</span></span>
 <span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>training_validation<span class="sc">$</span>infancy_vac <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(training_validation<span class="sc">$</span>infancy_vac)</span>
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Since our end goal is to predict day 14 antibody titers, let's also remove any data in our training and validation sets where actual_daY_relative_to_boost is greater than 14</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Since our end goal is to predict day 14 antibody titers, let's also remove any data in our training and validation sets where actual_day_relative_to_boost is greater than 14</span></span>
 <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>training_df <span class="ot">&lt;-</span> training_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(actual_day_relative_to_boost <span class="sc">&lt;=</span> <span class="dv">14</span>)</span>
 <span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>validation_df <span class="ot">&lt;-</span> validation_df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(actual_day_relative_to_boost <span class="sc">&lt;=</span> <span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -459,45 +459,109 @@ sample estimates:
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># We now have a dataframe that contains all the information needed for the model to predict the antibody titers at d14 for each subject in the prediction dataset.</span></span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the model to the prediction dataset</span></span>
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>ab_prediction <span class="ot">&lt;-</span> new_points <span class="sc">%&gt;%</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">predicted =</span> <span class="fu">predict</span>(lm_train, <span class="at">new_data =</span> new_points)) </span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's inspect ab_prediction to see the predicted antibody titers at d14 for each subject_id</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ab_prediction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in format.data.frame(if (omit) x[seq_len(n0), , drop = FALSE] else x, :
-corrupt data frame: columns will be truncated or padded with NAs</code></pre>
-</div>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">predicted =</span> <span class="fu">predict</span>(lm_train, <span class="at">new_data =</span> new_points)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's inspect ab_prediction to see the predicted antibody titers at d14 for each subject_id</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ab_prediction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  actual_day_relative_to_boost subject_id MFI_normalised_baseline infancy_vac
-1                           14        114               0.3576442          wP
-2                           14        103               0.7043292          wP
-3                           14        117               1.0390496          aP
-4                           14         98               1.3099382          wP
-5                           14        116               1.6782432          aP
-6                           14        105               0.9049383          wP
-          predicted
-1 # A tibble: 6 × 1
-2             .pred
-3             &lt;dbl&gt;
-4           1  6.32
-5           2  6.64
-6           3  5.07</code></pre>
+<pre><code># A tibble: 6 × 5
+  actual_day_relative_to_b…¹ subject_id MFI_normalised_basel…² infancy_vac .pred
+                       &lt;dbl&gt;      &lt;dbl&gt;                  &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;
+1                         14        114                  0.358 wP           6.32
+2                         14        103                  0.704 wP           6.64
+3                         14        117                  1.04  aP           5.07
+4                         14         98                  1.31  wP           7.20
+5                         14        116                  1.68  aP           5.66
+6                         14        105                  0.905 wP           6.82
+# ℹ abbreviated names: ¹​actual_day_relative_to_boost, ²​MFI_normalised_baseline</code></pre>
 </div>
 </div>
 </section>
 <section id="importing-actual-d14-antibody-titers-to-compare" class="level2">
 <h2 class="anchored" data-anchor-id="importing-actual-d14-antibody-titers-to-compare">Importing Actual d14 Antibody Titers to Compare</h2>
-<p>While we have been working with a 2022 dataset (prediction dataset) that only has d0 baseline values, we have access to the actual d14 antibody titers from the 2022 dataset. We can use these to compare our predicted values to the actual values. Let’s get this from the CMI-PB website (2nd challenge results).</p>
+<p>While we have been working with a 2022 dataset (prediction dataset) that only has d0 baseline values, we have access to the actual d14 antibody titers from the 2022 dataset. We can use these to compare our predicted values to the actual values.</p>
+<p>The entire 2020, 2021, 2022 antibody titer combined dataset is available from the CMI-PB application programming interface (API). We can use the <code>jsonlite</code> package to import the data, which is in JSON format.</p>
+<p>API is an interface that essentially has a set of functions and procedures that allow programs to access data and features from another application. In this case, this would be our computer to CMI-PB data. The API outlines available options (different types of datasets). As a developer, you can make requests to these API endpoints to use them in your own application.</p>
+<p>We essentially want to repeat all of the above steps for this new data (except training split). This will allow us to ultimately visualize the predicted vs.&nbsp;actual d0 - d14 antibody titers for each subject in the 2022 dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TO BE COMPLETED AFTER CMI-PB PUBLISHES 2022 RESULTS</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import the data</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'jsonlite'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    flatten</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>actual_data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="st">"https://www.cmi-pb.org/api/v4_1/plasma_ab_titer"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Data Pre-Processing</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Sort the data for 2022 specimens using prediction_specimen metadata</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>actual_data_2022 <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(actual_data, prediction_meta, <span class="at">by =</span> <span class="st">"specimen_id"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter for d0 to d14 values for IgG against PT only</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>actual_data_2022 <span class="ot">&lt;-</span> actual_data_2022 <span class="sc">%&gt;%</span> </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(planned_day_relative_to_boost <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span> <span class="sc">:</span> <span class="dv">14</span>), antigen <span class="sc">==</span> <span class="st">"PT"</span>, isotype <span class="sc">==</span> <span class="st">"IgG"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Preparing Baseline Value Dataframes</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="do">## Create a dataframe by filtering the baseline MFI_normalised values for each subject</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>baseline_2022 <span class="ot">&lt;-</span> actual_data_2022 <span class="sc">%&gt;%</span> </span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(planned_day_relative_to_boost <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="do">## Create a dataframe that only has baseline values excluded for each subject</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>non_baseline_2022 <span class="ot">&lt;-</span> actual_data_2022 <span class="sc">%&gt;%</span> </span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(planned_day_relative_to_boost <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Append baseline values to non-baseline values as a separate column and call it MFI_normalised_baseline. </span></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>df_2022 <span class="ot">&lt;-</span> non_baseline_2022 <span class="sc">%&gt;%</span> </span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(baseline_2022[,<span class="fu">c</span>(<span class="st">'subject_id'</span>, <span class="st">'MFI_normalised'</span>)], <span class="at">by =</span> <span class="st">"subject_id"</span>, <span class="at">suffix =</span> <span class="fu">c</span>(<span class="st">""</span>, <span class="st">"_baseline"</span>))</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Applying the Model to the 2022 Dataset</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>ab_2022 <span class="ot">&lt;-</span> df_2022 <span class="sc">%&gt;%</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">predict</span>(lm_train, df_2022)) </span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="do">## Plotting the Predicted and Actual 2022 Data</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ab_2022, </span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> actual_day_relative_to_boost, <span class="at">y =</span> MFI_normalised,</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> infancy_vac)) <span class="sc">+</span></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .pred), <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> </span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>subject_id) <span class="sc">+</span></span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="CMI-PB_Prediction_Walkthrough_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the Spearman correlation</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(ab_2022<span class="sc">$</span>MFI_normalised, ab_2022<span class="sc">$</span>.pred, <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Spearman's rank correlation rho
+
+data:  ab_2022$MFI_normalised and ab_2022$.pred
+S = 61638, p-value = 0.0004651
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.3759441 </code></pre>
+</div>
 </div>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<p>As you can see with our plotted predicted vs.&nbsp;actual 2022 data, and the Spearman Correlation, the model that was trained on 2021 data does very poorly on the 2022 data. This represents the goal of systems vaccinology - to understand how to better predict the immune response to a vaccine in a new population. The very basic model we used in this tutorial is not sufficient to predict the immune response to the vaccine, and highlights how there is much to learn about how to predict the immune response to vaccines in different populations. Understanding this will ultimately allow better vaccine design, and therefore more robust individual and population immunity against preventable diseases.</p>
+<section id="possible-extensions" class="level3">
+<h3 class="anchored" data-anchor-id="possible-extensions">Possible Extensions</h3>
 <p>As mentioned previously, the tidymodels framework allows you to change the model type easily. This is useful if you want to compare different models to see which one performs best. Feel free to try different models and compare their performance qualitatively by plotting the predicted values against the actual values for each subject in the validation dataset, and quantitatively using Spearman correlation. You may also try other methods of evaluating the model, such as mean squared error or root mean squared error.</p>
 <p>You may also choose to change the predictor variables in the model to see if you can improve the model’s performance. For example, you may want to include other variables such as age, sex, race, etc. to see if they improve the model’s performance.</p>
-<p>Finally, you may choose to look at other datasets in the CMI-PB challenge to see if you can model other types of data, such as PBMC cell frequency. These other datasets may be found <a href="https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources">here</a>.</p>
+<p>To extend your learning, you may choose to look at other datasets in the CMI-PB challenge to see if you can model other types of data, such as PBMC cell frequency. These other datasets may be found <a href="https://www.cmi-pb.org/blog/prediction-challenge-overview/#Data%20and%20resources">here</a>.</p>
 <p>We hope that this tutorial has given you a good introduction to the tidymodels framework and how to use it to fit a basic machine learning model to predict antibody titers. For additional information/resources, please refer to the <a href="https://www.tidymodels.org/">tidymodels website</a>. Some other useful things to learn to deepen you knowledge include: Lasso regression, Ridge regression, Elastic net regression, and any other type of modeling method you are interested in.</p>
+</section>
 </section>
 
 </main>
