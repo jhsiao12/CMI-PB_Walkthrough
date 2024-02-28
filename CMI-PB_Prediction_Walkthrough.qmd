@@ -2,7 +2,7 @@
 title: "Walkthrough of Predicting IgG Titers Using Tidymodels Machine Learning"
 author: "Jason Hsiao"
 date: "2024-02-13"
-format: pdf
+format: html
 ---
 
 ***RECOMMENDED***: Going through the walkthrough by viewing the online version of this document is recommended, and available here: https://jhsiao12.github.io/CMI-PB_Walkthrough/. The online version allows you to view the code in a more viewable format, and also click the hyperlinks throughout this walkthrough. Please also download the Quarto file from the following repository to modify and run the code locally: https://github.com/jhsiao12/CMI-PB_Walkthrough/.
@@ -399,7 +399,9 @@ cor.test(ab_2022$MFI_normalised, ab_2022$.pred, method = "spearman")
 
 ## Discussion
 
-As you can see with our plotted predicted vs. actual 2022 data, and the Spearman Correlation, the model that was trained on 2021 data does very poorly on the 2022 data. This represents the goal of systems vaccinology - to understand how to better predict the immune response to a vaccine in a new population. The very basic model we used in this tutorial is not sufficient to predict the immune response to the vaccine, and highlights how there is much to learn about how to predict the immune response to vaccines in different populations. Understanding this will ultimately allow better vaccine design, and therefore more robust individual and population immunity against preventable diseases.
+As you can see with our plotted predicted vs. actual 2022 data, and the Spearman Correlation, the model that was trained on 2021 data does very poorly on the 2022 data. This implies 'overfitting' - the model is too specific to the 2021 data and does not generalize well to the 2022 data. 
+
+The lack of models that are able to reliably predict patient response to vaccines represents the goal of systems vaccinology. The very basic model we used in this tutorial is not sufficient to predict the immune response to the vaccine, and highlights how there is much to learn in how we can model complex biological responses. Understanding this will ultimately allow better vaccine design, and therefore elicit more robust individual and population immunity against preventable diseases.
 
 
 ### Possible Extensions

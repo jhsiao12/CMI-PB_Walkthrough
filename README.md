@@ -3,7 +3,7 @@
 
 ### Introduction
 
-This repository provides resources for those who are interested in further exploring systems vaccinology and predicting patient responses to Pertussis vaccination using basic machine learning. Specifically, the following [walkthrough](https://jhsiao12.github.io/CMI-PB_Walkthrough/) builds a customizable tidymodels machine learning prediction of IgG antibody titers against Pertussis toxin (PT) 7 days post-vaccination.
+This repository provides resources for those who are interested in further exploring systems vaccinology and predicting patient responses to Pertussis vaccination using basic machine learning. Specifically, the following [walkthrough](https://jhsiao12.github.io/CMI-PB_Walkthrough/) builds a customizable tidymodels machine learning prediction of IgG antibody titers against Pertussis toxin (PT) 14 days post-vaccination.
 
 ---
 
